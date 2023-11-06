@@ -65,6 +65,7 @@ const images = [
 ];
 
 const gallery = document.querySelector('.gallery');
+
 gallery.addEventListener('click', onClickOpenImg);
 
 const imgItems = images.map(({ preview, original, description }) =>
@@ -85,17 +86,27 @@ gallery.insertAdjacentHTML('beforeend', imgItems);
 
 function onClickOpenImg(event) {
     event.preventDefault();
+
     const { target } = event;
 
-    if (!target.classList.contains('gallery-image')) {
+    // if (!target.classList.contains('gallery-image')) {
+    //     return;
+    // }
+
+    if (target.nodeName !== "IMG") {
         return;
     }
-
-    console.log(target.dataset.source);
 
     const instance = basicLightbox.create(
         `<img src="${target.dataset.source}" alt="${target.alt}" width="1280">`
     )
     instance.show();
-}
 
+    if (instance.show()) {
+        document.addEventListener('keydown', event => {
+            if (event.code === 'Escape') {
+                instance.close();
+            }
+        });
+    }
+}
